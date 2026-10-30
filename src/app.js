@@ -15,14 +15,21 @@ app.get('/', (req, res) => {
   });
 });
 
-app.use('/authors', authorsRouter);
 
 app.use((err, req, res, next) => {
+  if (err.type === 'entity.parse.failed') {
+    return res.status(400).json({
+      message: 'El cuerpo de la petición debe contener JSON válido',
+    });
+  }
+
   console.error(err);
 
-  res.status(500).json({
+  return res.status(500).json({
     message: 'Ocurrió un error interno en el servidor',
   });
 });
+
+
 
 module.exports = app;
