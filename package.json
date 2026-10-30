@@ -1,0 +1,26 @@
+{
+  "name": "proyectom2_ernestofascinetto",
+  "version": "1.0.0",
+  "description": "MiniBlog: API REST desarrollada con Node.js, Express y PostgreSQL para gestionar autores y publicaciones. Incluye operaciones CRUD, validaciones, pruebas automatizadas y documentación OpenAPI. Proyecto Integrador del Módulo 2 de Henry Full Stack.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fascinettoUX3f/ProyectoM2_ErnestoFascinetto.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/fascinettoUX3f/ProyectoM2_ErnestoFascinetto/issues"
+  },
+  "homepage": "https://github.com/fascinettoUX3f/ProyectoM2_ErnestoFascinetto#readme",
+  "dependencies": {
+    "dotenv": "^18.0.9",
+    "express": "^5.3.0",
+    "pg": "^8.23.1"
+  }
+}
