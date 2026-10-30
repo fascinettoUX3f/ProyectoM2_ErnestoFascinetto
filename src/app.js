@@ -1,11 +1,31 @@
 const express = require('express');
 const authorsRouter = require('./routes/authors.routes');
-
 const postsRouter = require('./routes/posts.routes');
+
+const fs = require('node:fs');
+const path = require('node:path');
+const YAML = require('yaml');
+const swaggerUi = require('swagger-ui-express');
 
 const app = express();
 
+
+const openapiPath = path.join(__dirname, '../docs/openapi.yaml');
+const openapiDocument = YAML.parse(
+  fs.readFileSync(openapiPath, 'utf8')
+);
+
+
+
 app.use(express.json());
+
+app.get('/openapi.json', (req, res) => {
+  res.status(200).json(openapiDocument);
+});
+
+app.use('/docs', swaggerUi.serve, swaggerUi.setup(openapiDocument));
+
+
 app.use('/authors', authorsRouter);
 app.use('/posts', postsRouter);
 

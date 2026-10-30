@@ -1,0 +1,69 @@
+openapi: 3.0.3
+
+info:
+  title: MiniBlog API
+  version: 1.0.0
+  description: API para gestionar autores y publicaciones.
+
+paths:
+  /authors:
+    get:
+      tags:
+        - Autores
+      summary: Listar autores
+      responses:
+        '200':
+          description: Lista de autores; puede estar vacía.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Author'
+        '500':
+          description: Error interno del servidor.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+components:
+  schemas:
+    Author:
+      type: object
+      required:
+        - id
+        - name
+        - email
+        - bio
+        - created_at
+      properties:
+        id:
+          type: integer
+          minimum: 1
+          maximum: 2147483647
+          example: 1
+        name:
+          type: string
+          maxLength: 100
+          example: Ana García
+        email:
+          type: string
+          maxLength: 150
+          example: ana@example.com
+        bio:
+          type: string
+          nullable: true
+          example: Desarrolladora web.
+        created_at:
+          type: string
+          format: date-time
+
+    Error:
+      type: object
+      required:
+        - message
+      properties:
+        message:
+          type: string
+          example: Ocurrió un error interno en el servidor
