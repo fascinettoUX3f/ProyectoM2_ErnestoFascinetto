@@ -45,7 +45,7 @@ router.get('/author/:authorId', async (req, res, next) => {
 router.get('/:id', async (req, res, next) => {
   const id = Number(req.params.id);
 
-  if (!Number.isSafeInteger(id) || id <= 0) {
+  if (!Number.isInteger(id) || id <= 0 || id > 2147483647) {
     return res.status(400).json({
       message: 'El ID debe ser un número entero positivo',
     });
