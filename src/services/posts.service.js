@@ -45,6 +45,35 @@ async function getPostsByAuthor(authorId) {
 }
 
 
+async function createPost({ author_id, title, content, published }) {
+  const result = await pool.query(
+    `INSERT INTO posts (author_id, title, content, published)
+     VALUES ($1, $2, $3, $4)
+     RETURNING id, author_id, title, content, published, created_at`,
+    [author_id, title, content, published]
+  );
+
+  return result.rows[0];
+}
 
 
-module.exports = { getPosts, getPostById, getPostsByAuthor };
+async function updatePost(id, { author_id, title, content, published }) {
+  const result = await pool.query(
+    `UPDATE posts
+     SET author_id = $1, title = $2, content = $3, published = $4
+     WHERE id = $5
+     RETURNING id, author_id, title, content, published, created_at`,
+    [author_id, title, content, published, id]
+  );
+
+  return result.rows[0];
+}
+
+
+module.exports = {
+  getPosts,
+  getPostById,
+  getPostsByAuthor,
+  createPost,
+  updatePost,
+};
