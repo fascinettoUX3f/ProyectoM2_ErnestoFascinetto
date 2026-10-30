@@ -43,9 +43,21 @@ async function updateAuthor(id, { name, email, bio }) {
 
 
 
+async function deleteAuthor(id) {
+  const result = await pool.query(
+    'DELETE FROM authors WHERE id = $1 RETURNING id',
+    [id]
+  );
+
+  return result.rows[0];
+}
+
+
+
 module.exports = {
   getAuthors,
   getAuthorById,
   createAuthor,
   updateAuthor,
+  deleteAuthor,
 };
