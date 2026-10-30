@@ -70,10 +70,22 @@ async function updatePost(id, { author_id, title, content, published }) {
 }
 
 
+async function deletePost(id) {
+  const result = await pool.query(
+    'DELETE FROM posts WHERE id = $1 RETURNING id',
+    [id]
+  );
+
+  return result.rows[0];
+}
+
+
+
 module.exports = {
   getPosts,
   getPostById,
   getPostsByAuthor,
   createPost,
   updatePost,
+  deletePost,
 };

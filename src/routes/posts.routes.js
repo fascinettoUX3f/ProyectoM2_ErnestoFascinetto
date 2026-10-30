@@ -6,6 +6,7 @@ const {
   getPostsByAuthor,
   createPost,
   updatePost,
+  deletePost,
 } = require('../services/posts.service');
 
 
@@ -194,6 +195,30 @@ router.put('/:id', async (req, res, next) => {
   }
 });
 
+
+router.delete('/:id', async (req, res, next) => {
+  const id = Number(req.params.id);
+
+  if (!Number.isInteger(id) || id <= 0 || id > 2147483647) {
+    return res.status(400).json({
+      message: 'El ID debe ser un número entero positivo válido',
+    });
+  }
+
+  try {
+    const post = await deletePost(id);
+
+    if (!post) {
+      return res.status(404).json({
+        message: 'Publicación no encontrada',
+      });
+    }
+
+    return res.status(204).send();
+  } catch (error) {
+    next(error);
+  }
+});
 
 
 module.exports = router;
