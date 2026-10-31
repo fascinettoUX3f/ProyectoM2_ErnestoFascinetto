@@ -186,7 +186,66 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
 
+  /posts:
+    get:
+      tags:
+        - Publicaciones
+      summary: Listar publicaciones
+      responses:
+        '200':
+          description: Lista de publicaciones; puede estar vacía.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Post'
+        '500':
+          description: Error interno del servidor.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 
+  /posts/{id}:
+    get:
+      tags:
+        - Publicaciones
+      summary: Consultar una publicación por ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 2147483647
+          example: 1
+      responses:
+        '200':
+          description: Publicación encontrada.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Post'
+        '400':
+          description: ID inválido.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Publicación no encontrada.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Error interno del servidor.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 
 components:
   schemas:
@@ -251,3 +310,37 @@ components:
           type: string
           nullable: true
           example: Aprendiendo backend con MiniBlog.
+
+    Post:
+      type: object
+      required:
+        - id
+        - author_id
+        - title
+        - content
+        - published
+        - created_at
+      properties:
+        id:
+          type: integer
+          minimum: 1
+          maximum: 2147483647
+          example: 1
+        author_id:
+          type: integer
+          minimum: 1
+          maximum: 2147483647
+          example: 1
+        title:
+          type: string
+          maxLength: 200
+          example: Mi primera publicación
+        content:
+          type: string
+          example: Estamos construyendo MiniBlog.
+        published:
+          type: boolean
+          example: true
+        created_at:
+          type: string
+          format: date-time
