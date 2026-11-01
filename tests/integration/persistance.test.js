@@ -13,6 +13,7 @@ if (process.env.TEST_DB_NAME !== 'miniblog_test') {
 }
 
 process.env.DB_NAME = process.env.TEST_DB_NAME;
+delete process.env.DATABASE_URL;
 
 const pool = require('../../src/db/pool');
 const app = require('../../src/app');

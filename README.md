@@ -169,6 +169,20 @@ Los IDs deben ser enteros positivos de hasta 2147483647.
 
 Los errores devuelven un objeto JSON con la propiedad `message`.
 
+## Documentación OpenAPI
+
+Con la aplicación iniciada mediante `npm start`:
+
+- [Swagger UI](http://localhost:3000/docs/): consultar y probar los endpoints.
+- [Especificación JSON](http://localhost:3000/openapi.json).
+- [Archivo OpenAPI YAML](docs/openapi.yaml).
+
+Las operaciones POST, PUT y DELETE de Swagger modifican la base configurada.
+
+## Uso de IA
+
+Se utilizó ChatGPT/Codex para planificar, apoyar la implementación, corregir errores y preparar pruebas y documentación. Los pasos clave se registran en [Uso de IA](docs/uso-ia.md).
+
 ## Variables de entorno
 
 | Variable | Uso |
