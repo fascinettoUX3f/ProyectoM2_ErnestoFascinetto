@@ -188,6 +188,7 @@ Se utilizó ChatGPT/Codex para planificar, apoyar la implementación, corregir e
 | Variable | Uso |
 |---|---|
 | PORT | Puerto HTTP; por defecto, 3000 |
+| DATABASE_URL | Conexión completa a PostgreSQL; si tiene valor, tiene prioridad sobre DB_HOST, DB_PORT, DB_NAME, DB_USER y DB_PASSWORD |
 | DB_HOST | Dirección del servidor PostgreSQL |
 | DB_PORT | Puerto de PostgreSQL |
 | DB_NAME | Nombre de la base de la aplicación |
@@ -197,3 +198,55 @@ Se utilizó ChatGPT/Codex para planificar, apoyar la implementación, corregir e
 
 El archivo `.env` contiene la configuración local y no se versiona.
 `.env.example` es la plantilla pública de configuración.
+
+## Despliegue en Render
+
+- [API pública](https://miniblog-api-kacz.onrender.com/)
+- [Swagger público](https://miniblog-api-kacz.onrender.com/docs/)
+- [OpenAPI JSON público](https://miniblog-api-kacz.onrender.com/openapi.json)
+- [Evidencia del despliegue](docs/evidencia-render.png)
+
+Se utilizó Render como alternativa porque Railway tenía suspendido el registro de cuentas nuevas al intentar desplegar. Este cambio de plataforma está pendiente de aceptación por parte del equipo docente. [Estado de Railway](https://status.railway.com/incident/O1VGXWU5).
+
+### Configuración utilizada
+
+1. Crear una base Postgres Free en Oregon. No confundir el nombre del servicio con el nombre de la base generado por Render.
+2. Desde una terminal local en la carpeta del proyecto, conectarse usando el host externo, nombre de base y usuario mostrados por Render:
+
+   ```bash
+   psql "host=HOST_EXTERNO dbname=NOMBRE_BASE user=USUARIO sslmode=require" -W
+   ```
+
+   Introducir la contraseña cuando se solicite y ejecutar una sola vez sobre la base nueva:
+
+   ```text
+   \set ON_ERROR_STOP on
+   \i sql/setup.sql
+   \i sql/seed.sql
+   SELECT id, name FROM authors ORDER BY id;
+   \q
+   ```
+
+3. Crear un Web Service conectado al repositorio de GitHub, con estos valores:
+
+   | Campo | Valor |
+   |---|---|
+   | Rama desplegada | `feat/authors-api` |
+   | Región | Oregon |
+   | Lenguaje | Node |
+   | Root Directory | Vacío |
+   | Build Command | `npm ci` |
+   | Start Command | `npm start` |
+   | Compute | Free |
+   | `NODE_VERSION` | `24` |
+   | `DATABASE_URL` | Internal Database URL completa de la credencial activa |
+
+   Configurar los valores secretos únicamente en Render. La URL interna comunica la API con Postgres dentro de Render; la externa permite conectarse desde la computadora. La URL pública HTTPS es la dirección de la API, no una conexión a la base. Render proporciona `PORT` automáticamente.
+
+4. Desplegar y verificar `/authors`, `/posts`, `/docs/` y `/openapi.json` en la URL pública. Los dos primeros endpoints deben devolver los datos del seed.
+
+El servicio está conectado a `feat/authors-api`; al integrar el PR, cambiar la rama de despliegue a `main` en Render para publicar futuros cambios desde la rama principal.
+
+### Límites de la instancia gratuita
+
+La API puede tardar en responder al despertar tras un período de inactividad. La base actual indica vencimiento el **30 de noviembre de 2026**; debe mantenerse disponible durante la evaluación. [Límites de Render Free](https://render.com/docs/free).
