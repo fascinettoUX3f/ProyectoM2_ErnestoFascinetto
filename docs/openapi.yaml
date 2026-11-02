@@ -1,0 +1,560 @@
+openapi: 3.0.3
+
+info:
+  title: MiniBlog API
+  version: 1.0.0
+  description: API para gestionar autores y publicaciones.
+
+paths:
+  /authors:
+    get:
+      tags:
+        - Autores
+      summary: Listar autores
+      responses:
+        '200':
+          description: Lista de autores; puede estar vacía.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Author'
+        '500':
+          description: Error interno del servidor.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    post:
+      tags:
+        - Autores
+      summary: Crear un autor
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthorInput'
+      responses:
+        '201':
+          description: Autor creado.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Author'
+        '400':
+          description: Datos inválidos, JSON incorrecto o email ya registrado.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Error interno del servidor.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'            
+
+
+
+  /authors/{id}:
+    get:
+      tags:
+        - Autores
+      summary: Consultar un autor por ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del autor.
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 2147483647
+          example: 1
+      responses:
+        '200':
+          description: Autor encontrado.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Author'
+        '400':
+          description: ID inválido.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: El ID debe ser un número entero positivo
+        '404':
+          description: El autor no existe.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                message: Autor no encontrado
+        '500':
+          description: Error interno del servidor.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    put:
+      tags:
+        - Autores
+      summary: Actualizar un autor
+      description: Requiere nombre y email. Si se omite bio, se guarda como null.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 2147483647
+          example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthorInput'
+      responses:
+        '200':
+          description: Autor actualizado.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Author'
+        '400':
+          description: ID o datos inválidos, JSON incorrecto o email ya registrado.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Autor no encontrado.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Error interno del servidor.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    delete:
+      tags:
+        - Autores
+      summary: Eliminar un autor
+      description: También elimina todas las publicaciones asociadas al autor.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 2147483647
+          example: 1
+      responses:
+        '204':
+          description: Autor eliminado. La respuesta no contiene cuerpo.
+        '400':
+          description: ID inválido.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Autor no encontrado.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Error interno del servidor.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /posts:
+    get:
+      tags:
+        - Publicaciones
+      summary: Listar publicaciones
+      responses:
+        '200':
+          description: Lista de publicaciones; puede estar vacía.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Post'
+        '500':
+          description: Error interno del servidor.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    post:
+      tags:
+        - Publicaciones
+      summary: Crear una publicación
+      description: Si se omite published, la publicación se crea como borrador.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostInput'
+      responses:
+        '201':
+          description: Publicación creada.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Post'
+        '400':
+          description: Datos inválidos, JSON incorrecto o autor inexistente.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Error interno del servidor.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'    
+
+
+  /posts/{id}:
+    get:
+      tags:
+        - Publicaciones
+      summary: Consultar una publicación por ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 2147483647
+          example: 1
+      responses:
+        '200':
+          description: Publicación encontrada.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Post'
+        '400':
+          description: ID inválido.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Publicación no encontrada.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Error interno del servidor.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    put:
+      tags:
+        - Publicaciones
+      summary: Actualizar una publicación
+      description: Requiere author_id, title, content y published.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 2147483647
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostUpdateInput'
+      responses:
+        '200':
+          description: Publicación actualizada.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Post'
+        '400':
+          description: ID o datos inválidos, JSON incorrecto o autor inexistente.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Publicación no encontrada.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Error interno del servidor.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    delete:
+      tags:
+        - Publicaciones
+      summary: Eliminar una publicación
+      description: Elimina la publicación y conserva a su autor.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 2147483647
+      responses:
+        '204':
+          description: Publicación eliminada. La respuesta no contiene cuerpo.
+        '400':
+          description: ID inválido.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Publicación no encontrada.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Error interno del servidor.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /posts/author/{authorId}:
+    get:
+      tags:
+        - Publicaciones
+      summary: Listar publicaciones de un autor
+      description: |
+        Incluye los datos del autor en cada publicación.
+        Devuelve una lista vacía si no hay publicaciones coincidentes,
+        incluso si el autor no existe.
+      parameters:
+        - name: authorId
+          in: path
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 2147483647
+          example: 1
+      responses:
+        '200':
+          description: Lista de publicaciones con datos del autor.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PostWithAuthor'
+        '400':
+          description: ID del autor inválido.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Error interno del servidor.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+
+
+components:
+  schemas:
+    PostUpdateInput:
+      allOf:
+        - $ref: '#/components/schemas/PostInput'
+        - type: object
+          required:
+            - published
+
+    Author:
+      type: object
+      required:
+        - id
+        - name
+        - email
+        - bio
+        - created_at
+      properties:
+        id:
+          type: integer
+          minimum: 1
+          maximum: 2147483647
+          example: 1
+        name:
+          type: string
+          maxLength: 100
+          example: Ana García
+        email:
+          type: string
+          maxLength: 150
+          example: ana@example.com
+        bio:
+          type: string
+          nullable: true
+          example: Desarrolladora web.
+        created_at:
+          type: string
+          format: date-time
+
+    Error:
+      type: object
+      required:
+        - message
+      properties:
+        message:
+          type: string
+          example: Ocurrió un error interno en el servidor
+
+    AuthorInput:
+      type: object
+      required:
+        - name
+        - email
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 100
+          description: No puede estar vacío ni contener solo espacios.
+          example: Ernesto
+        email:
+          type: string
+          minLength: 1
+          maxLength: 150
+          description: Debe ser único y no contener solo espacios.
+          example: ernesto@example.com
+        bio:
+          type: string
+          nullable: true
+          example: Aprendiendo backend con MiniBlog.
+
+    Post:
+      type: object
+      required:
+        - id
+        - author_id
+        - title
+        - content
+        - published
+        - created_at
+      properties:
+        id:
+          type: integer
+          minimum: 1
+          maximum: 2147483647
+          example: 1
+        author_id:
+          type: integer
+          minimum: 1
+          maximum: 2147483647
+          example: 1
+        title:
+          type: string
+          maxLength: 200
+          example: Mi primera publicación
+        content:
+          type: string
+          example: Estamos construyendo MiniBlog.
+        published:
+          type: boolean
+          example: true
+        created_at:
+          type: string
+          format: date-time
+
+    PostWithAuthor:
+      allOf:
+        - $ref: '#/components/schemas/Post'
+        - type: object
+          required:
+            - author_name
+            - author_email
+            - author_bio
+            - author_created_at
+          properties:
+            author_name:
+              type: string
+              example: Ana García
+            author_email:
+              type: string
+              example: ana@example.com
+            author_bio:
+              type: string
+              nullable: true
+              example: Desarrolladora de aplicaciones web.
+            author_created_at:
+              type: string
+              format: date-time
+
+    PostInput:
+      type: object
+      required:
+        - author_id
+        - title
+        - content
+      properties:
+        author_id:
+          type: integer
+          minimum: 1
+          maximum: 2147483647
+          description: ID de un autor existente.
+          example: 1
+        title:
+          type: string
+          minLength: 1
+          maxLength: 200
+          description: No puede contener solo espacios.
+          example: Publicación desde Swagger
+        content:
+          type: string
+          minLength: 1
+          description: No puede contener solo espacios.
+          example: Estamos probando la documentación de MiniBlog.
+        published:
+          type: boolean
+          default: false
+          example: false    
