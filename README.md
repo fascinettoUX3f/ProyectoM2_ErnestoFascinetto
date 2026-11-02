@@ -231,7 +231,7 @@ Se utilizó Render como alternativa porque Railway tenía suspendido el registro
 
    | Campo | Valor |
    |---|---|
-   | Rama desplegada | `feat/authors-api` |
+   | Rama desplegada | `main` |
    | Región | Oregon |
    | Lenguaje | Node |
    | Root Directory | Vacío |
@@ -245,7 +245,9 @@ Se utilizó Render como alternativa porque Railway tenía suspendido el registro
 
 4. Desplegar y verificar `/authors`, `/posts`, `/docs/` y `/openapi.json` en la URL pública. Los dos primeros endpoints deben devolver los datos del seed.
 
-El servicio está conectado a `feat/authors-api`; al integrar el PR, cambiar la rama de despliegue a `main` en Render para publicar futuros cambios desde la rama principal.
+El [PR #1](https://github.com/fascinettoUX3f/ProyectoM2_ErnestoFascinetto/pull/1) está integrado. Render despliega desde `main` y el despliegue fue verificado con consultas públicas de autores, publicaciones y OpenAPI. La especificación documenta las 11 operaciones de la API.
+
+La validación local incluye 14 pruebas con consultas simuladas y 2 pruebas de integración aprobadas.
 
 ### Límites de la instancia gratuita
 
